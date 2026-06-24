@@ -1,0 +1,69 @@
+.diferenciais {
+    [data-fs-content] {
+        margin-top: 1.5rem;
+        margin-bottom: 3rem;
+
+        [data-fs-content-flex] {
+            display: flex;
+            gap: 2rem;
+            overflow-x: auto;
+            justify-content: space-between;
+
+            &::-webkit-scrollbar-thumb,
+            &::-webkit-scrollbar-thumb:hover,
+            &::-webkit-scrollbar-track {
+                background: transparent;
+            }
+
+            &::-webkit-scrollbar {
+                display: none;
+            }
+
+            @media(min-width: 1200px) {
+                padding-left: 14px;
+                padding-right: 14px;
+            }
+
+            .item {
+                gap: 1.25rem;
+                align-items: center;
+                display: flex;
+                flex-shrink: 0;
+                white-space: nowrap;
+                padding-top: 0.75rem;
+                background-color: #f6f6f6;
+                padding-bottom: 0.75rem;
+                width: 300px;
+                padding-left: 1.25rem;
+                border-radius: 0.5rem;
+                padding-right: 1rem;
+                justify-content: space-between;
+
+                svg {
+                    width: 36px;
+                    height: 36px;
+                    color: #006eff;
+                }
+
+                .text {
+                    display: block;
+                    width: 100%;
+                    text-align: left;
+
+                    div {
+                        text-transform: uppercase;
+                        font-weight: 700;
+                        font-size: 0.875rem;
+                        line-height: 1.25rem;
+                    }
+
+                    p {
+                        color: #2d2d2c;
+                        font-size: 0.875rem;
+                        line-height: 1.25rem;
+                    }
+                }
+            }
+        }
+    }
+}
