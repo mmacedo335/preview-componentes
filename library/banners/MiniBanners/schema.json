@@ -1,0 +1,61 @@
+{
+  "name": "MiniBanners",
+  "requiredScopes": [],
+  "schema": {
+    "title": "Mini Banners",
+    "description": "Configurações dos mini banners",
+    "type": "object",
+    "required": [],
+    "properties": {
+      "title": {
+        "title": "Título da Seção",
+        "type": "string"
+      },
+      "quantity": {
+        "title": "Itens por sliders",
+        "type": "string"
+      },
+      "espacamento": {
+        "title": "Espaçamento",
+        "type": "string"
+      },
+      "banners": {
+        "title": "Banners",
+        "type": "array",
+        "items": {
+          "title": "Banner",
+          "type": "object",
+          "properties": {
+            "link": {
+              "title": "Link",
+              "type": "string"
+            },
+            "image": {
+              "title": "Imagem",
+              "type": "string",
+              "widget": {
+                "ui:widget": "image-uploader"
+              }
+            },
+            "alt": {
+              "title": "Texto Alternativo",
+              "type": "string"
+            },
+            "width": {
+              "title": "Largura imagem",
+              "type": "string"
+            },
+            "height": {
+              "title": "Altura imagem",
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ver_todos": {
+        "title": "Link ver todos",
+        "type": "string"
+      }
+    }
+  }
+}
