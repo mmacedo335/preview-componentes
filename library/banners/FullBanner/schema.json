@@ -1,0 +1,44 @@
+{
+  "name": "FullBanner",
+  "requiredScopes": [],
+  "schema": {
+    "title": "Full Banner",
+    "description": "Configurações do banner full",
+    "type": "object",
+    "required": [],
+    "properties": {
+      "banners": {
+        "title": "Banners",
+        "type": "array",
+        "items": {
+          "title": "Banner",
+          "type": "object",
+          "properties": {
+            "link": {
+              "title": "Link",
+              "type": "string"
+            },
+            "bannerDesktop": {
+              "title": "Banner Desktop",
+              "type": "string",
+              "widget": {
+                "ui:widget": "image-uploader"
+              }
+            },
+            "bannerMobile": {
+              "title": "Banner Mobile",
+              "type": "string",
+              "widget": {
+                "ui:widget": "image-uploader"
+              }
+            },
+            "alt": {
+              "title": "Texto Alternativo",
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}
