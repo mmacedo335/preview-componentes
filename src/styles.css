@@ -1158,16 +1158,6 @@ body {
   line-height: 1.5;
 }
 
-.tag {
-  display: inline-block;
-  font-size: 11px;
-  background: var(--fg-bg-cream);
-  border: 1px solid var(--fg-line-soft);
-  border-radius: 999px;
-  padding: 3px 10px;
-  margin: 0 5px 5px 0;
-  color: var(--text-muted);
-}
 
 /* ---------------- Scrollbars ---------------- */
 .list::-webkit-scrollbar,
