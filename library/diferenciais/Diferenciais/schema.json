@@ -1,0 +1,37 @@
+{
+  "name": "Diferenciais",
+  "requiredScopes": [],
+  "schema": {
+    "title": "Diferenciais",
+    "description": "Configurações dos diferenciais",
+    "type": "object",
+    "required": [],
+    "properties": {
+      "items": {
+        "title": "Itens",
+        "type": "array",
+        "items": {
+          "title": "Item",
+          "type": "object",
+          "properties": {
+            "svg": {
+              "title": "Código SVG",
+              "type": "string",
+              "widget": {
+                "ui:widget": "textarea"
+              }
+            },
+            "title": {
+              "title": "Título",
+              "type": "string"
+            },
+            "description": {
+              "title": "Descrição",
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}
