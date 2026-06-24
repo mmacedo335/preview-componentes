@@ -1,0 +1,75 @@
+{
+  "name": "BannerFixo",
+  "requiredScopes": [],
+  "schema": {
+    "title": "Banner Fixo",
+    "description": "Configurações do banner fixo",
+    "type": "object",
+    "required": [],
+    "properties": {
+      "bannerDesktop": {
+        "title": "Banner Desktop",
+        "description": "Configurações do banner fixo",
+        "type": "object",
+        "properties": {
+          "link": {
+            "title": "Link",
+            "type": "string"
+          },
+          "image": {
+            "title": "Imagem Desktop",
+            "type": "string",
+            "widget": {
+              "ui:widget": "image-uploader"
+            }
+          },
+          "alt": {
+            "title": "Texto Alternativo",
+            "type": "string"
+          },
+          "width": {
+            "title": "Largura",
+            "type": "number",
+            "default": 1920
+          },
+          "height": {
+            "title": "Altura",
+            "type": "number",
+            "default": 400
+          }
+        }
+      },
+      "bannerMobile": {
+        "title": "Banner Mobile",
+        "type": "object",
+        "properties": {
+          "link": {
+            "title": "Link",
+            "type": "string"
+          },
+          "image": {
+            "title": "Imagem Mobile",
+            "type": "string",
+            "widget": {
+              "ui:widget": "image-uploader"
+            }
+          },
+          "alt": {
+            "title": "Texto Alternativo",
+            "type": "string"
+          },
+          "width": {
+            "title": "Largura",
+            "type": "number",
+            "default": 768
+          },
+          "height": {
+            "title": "Altura",
+            "type": "number",
+            "default": 400
+          }
+        }
+      }
+    }
+  }
+}
