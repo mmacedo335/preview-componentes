@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "component-library",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["vite", "--port", "6033", "--no-open"],
+      "port": 6033
+    }
+  ]
+}

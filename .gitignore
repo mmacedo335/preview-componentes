@@ -1,0 +1,12 @@
+node_modules
+dist
+.vite
+*.local
+
+# variáveis de ambiente (segredos: ACCESS_ID, GITHUB_TOKEN, …) — nunca versionar
+.env
+.env.*
+!.env.example
+
+# gerado pelo scanner (descomente se preferir não versionar o catálogo)
+# src/data/catalog.generated.json
