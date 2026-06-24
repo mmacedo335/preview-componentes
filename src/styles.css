@@ -838,7 +838,6 @@ body {
   width: 100%;
   background: #fff;
   transition: width 0.2s var(--fg-ease);
-  border-radius: 12px;
   overflow: hidden;
   position: relative;
   box-shadow: var(--fg-shadow-1);
