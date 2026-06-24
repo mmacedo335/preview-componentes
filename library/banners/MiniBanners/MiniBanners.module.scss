@@ -1,0 +1,67 @@
+.miniBanners {
+    [data-fs-content] {
+        margin-top: 1.25rem;
+        margin-bottom: 2.25rem;
+
+        @include media(">notebook") {
+            :global(.swiper-slide) {
+                padding-bottom: 2.5rem;
+            }
+        }
+    }
+
+    .top {
+        display: flex;
+        justify-content: space-between;
+
+        a {
+            height: 1.75rem;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            justify-content: center;
+            font-size: 0.875rem;
+            padding-left: 0.25rem;
+            padding-right: 0.25rem;
+            line-height: 1.25rem;
+            color: #707070;
+            border-radius: 0.25rem;
+            border: 1px solid #707070;
+        }
+    }
+
+    .title {
+        font-weight: 600;
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+        line-height: 2rem;
+        color: #2d2d2c;
+
+        @include media("<notebook") {
+            margin-bottom: 0.4rem;
+            font-size: 1.25rem;
+            line-height: 1.75rem;
+        }
+    }
+
+    img {
+        border-radius: 0.25rem;
+        max-width: 100%;
+        height: auto;
+    }
+
+    ul {
+        li {
+            &:hover {
+                opacity: 0.5;
+            }
+        }
+    }
+
+    @include media("<notebook") {
+        :global(.swiper-slide) {
+            max-width: var(--slide-width);
+        }
+    }
+
+}
