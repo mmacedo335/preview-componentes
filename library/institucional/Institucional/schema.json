@@ -1,0 +1,104 @@
+{
+  "name": "Institucional",
+  "schema": {
+    "title": "Conteúdo Institucional",
+    "type": "object",
+    "description": "Conteúdo de páginas institucionais com menu, título, imagem e texto",
+    "properties": {
+      "menu": {
+        "type": "array",
+        "title": "Menu de Navegação",
+        "default": [
+          {
+            "nome": "Perguntas Frequentes",
+            "href": "/perguntas-frequentes"
+          },
+          {
+            "nome": "Política de Privacidade",
+            "href": "/politica-de-privacidade"
+          },
+          {
+            "nome": "Política de Troca e Devolução",
+            "href": "/politica-de-troca-e-devolucao"
+          },
+          {
+            "nome": "Política Frete Grátis",
+            "href": "/politica-frete-gratis"
+          },
+          {
+            "nome": "Fale Conosco",
+            "href": "/fale-conosco"
+          }
+        ],
+        "items": {
+          "type": "object",
+          "title": "Item do Menu",
+          "properties": {
+            "nome": {
+              "type": "string",
+              "title": "Nome",
+              "description": "Nome do item do menu",
+              "default": ""
+            },
+            "href": {
+              "type": "string",
+              "title": "Link (href)",
+              "description": "URL de destino do item",
+              "default": ""
+            }
+          },
+          "required": [
+            "nome",
+            "href"
+          ]
+        }
+      },
+      "titulo": {
+        "type": "string",
+        "title": "Título",
+        "description": "Título da página institucional",
+        "default": ""
+      },
+      "imagem": {
+        "type": "string",
+        "title": "Imagem",
+        "description": "Imagem opcional da página",
+        "default": "",
+        "widget": {
+          "ui:widget": "media-gallery"
+        }
+      },
+      "conteudo": {
+        "type": "string",
+        "title": "Conteúdo HTML",
+        "description": "Conteúdo da página em HTML",
+        "default": ""
+      },
+      "faq": {
+        "type": "array",
+        "title": "FAQ - Perguntas Frequentes",
+        "default": [],
+        "items": {
+          "type": "object",
+          "title": "Pergunta",
+          "properties": {
+            "pergunta": {
+              "type": "string",
+              "title": "Pergunta",
+              "default": ""
+            },
+            "resposta": {
+              "type": "string",
+              "title": "Resposta",
+              "default": ""
+            }
+          },
+          "required": [
+            "pergunta",
+            "resposta"
+          ]
+        }
+      }
+    }
+  }
+}
