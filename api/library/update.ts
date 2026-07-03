@@ -1,12 +1,10 @@
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import {
-  checkConfig, checkAccess, ghGet, ghListDir, ghPut, ghDelete, ghDeleteDir,
-  strToB64, dataUrlToB64, buildMeta,
+  checkConfig, checkAccess, ghListDir, ghPut, ghDelete, ghDeleteDir,
+  strToB64, buildMeta,
   sanitizeName, sanitizeCategory,
   readJsonBody, json, type GhFile,
 } from './_github.js'
-
-const IMG_EXT = /\.(png|jpe?g|webp|avif|svg)$/i
 
 export default async function handler(req: IncomingMessage, res: ServerResponse) {
   if (req.method !== 'POST') return json(res, 405, { ok: false, error: 'Method Not Allowed' })
@@ -72,33 +70,6 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     }
     if (body.scss && String(body.scss).trim()) {
       await ghPut(`${dir}/${name}.module.scss`, strToB64(String(body.scss)), undefined, msg)
-    }
-
-    // Screenshots: grava os enviados; se rename e não enviado, copia os existentes
-    const images = body.images as Record<string, string> | undefined
-    for (const vp of ['desktop', 'mobile'] as const) {
-      const dataUrl = images?.[vp]
-      if (dataUrl) {
-        const dec = dataUrlToB64(dataUrl)
-        if (!dec) continue
-        if (!isRename) {
-          // remove antigas desse viewport (qualquer ext)
-          const oldImg = oldFiles.find(f => f.name.replace(IMG_EXT, '').toLowerCase() === vp)
-          if (oldImg) await ghDelete(`${oldDir}/${oldImg.name}`, oldImg.sha, msg)
-        }
-        await ghPut(`${dir}/${vp}.${dec.ext}`, dec.b64, undefined, msg)
-      } else if (isRename) {
-        // copia imagem existente para o novo caminho
-        const oldImg = oldFiles.find(f => f.name.replace(IMG_EXT, '').toLowerCase() === vp)
-        if (oldImg) {
-          const fileData = await ghGet(`${oldDir}/${oldImg.name}`) as GhFile | null
-          if (fileData?.content) {
-            const b64 = fileData.content.replace(/\s/g, '')
-            await ghPut(`${newDir}/${oldImg.name}`, b64, undefined, msg)
-          }
-        }
-      }
-      // se não é rename e não veio nova imagem: mantém a existente (não toca)
     }
 
     // Se houve rename, deleta a pasta antiga

@@ -9,11 +9,9 @@ Cada componente é uma **pasta** versionada no git. A biblioteca lê tudo daqui
 library/
 └─ <categoria>/<NomeDoComponente>/
    ├─ <Nome>.tsx          # código do componente (obrigatório)
-   ├─ meta.json           # nome, categoria, descrição, tags, link da loja (obrigatório)
+   ├─ meta.json           # nome, categoria, descrição, tags, links das lojas (obrigatório)
    ├─ schema.json         # schema do CMS FastStore (opcional)
-   ├─ <Nome>.module.scss  # estilos (opcional)
-   ├─ desktop.png         # screenshot desktop (opcional)
-   └─ mobile.png          # screenshot mobile (opcional)
+   └─ <Nome>.module.scss  # estilos (opcional)
 ```
 
 `meta.json`:
@@ -24,9 +22,15 @@ library/
   "category": "banners",
   "description": "Banner principal da home.",
   "tags": ["banner", "home"],
-  "storeLink": "https://www.sualoja.com.br/"
+  "storeLinks": [
+    { "label": "Loja A", "url": "https://www.lojaa.com.br/" },
+    { "label": "Loja B", "url": "https://www.lojab.com.br/" }
+  ]
 }
 ```
+
+> O campo antigo `"storeLink": "https://…"` (URL única) ainda é lido para
+> compatibilidade, mas prefira `storeLinks`.
 
 ## Como cadastrar
 

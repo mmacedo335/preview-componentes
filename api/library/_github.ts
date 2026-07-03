@@ -152,6 +152,18 @@ export function sanitizeCategory(s: string) {
     .replace(/[^a-z0-9-]/g, '')
 }
 
+/** Normaliza os links de loja do corpo, aceitando o formato antigo (storeLink). */
+function normStoreLinks(body: any): { label: string; url: string }[] {
+  const raw = Array.isArray(body.storeLinks)
+    ? body.storeLinks
+    : body.storeLink
+    ? [{ label: '', url: body.storeLink }]
+    : []
+  return raw
+    .map((s: any) => ({ label: String(s?.label ?? '').trim(), url: String(s?.url ?? '').trim() }))
+    .filter((s: { url: string }) => s.url)
+}
+
 export function buildMeta(body: any, name: string, category: string) {
   const tags = Array.isArray(body.tags)
     ? body.tags
@@ -162,7 +174,7 @@ export function buildMeta(body: any, name: string, category: string) {
     platform: body.platform === 'VTEX IO' ? 'VTEX IO' : 'FastStore',
     description: body.description || '',
     tags,
-    storeLink: body.storeLink || '',
+    storeLinks: normStoreLinks(body),
   }
 }
 

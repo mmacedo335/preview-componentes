@@ -1,5 +1,4 @@
 import type { ComponentEntry, Platform } from '../types'
-import { hasPreviewImage } from '../data/previews'
 import logoFg from '../assets/logo-fg.svg'
 
 interface Props {
@@ -16,10 +15,6 @@ interface Props {
   meta: { localCount: number; categoryCount: number }
   onAddComponent: () => void
   onLogout: () => void
-}
-
-function statusDot(entry: ComponentEntry) {
-  return hasPreviewImage(entry) ? 'dot--live' : 'dot--code'
 }
 
 export default function Sidebar({
@@ -137,7 +132,6 @@ export default function Sidebar({
                 <span style={{ overflow: 'hidden' }}>
                   <span className="list__item-name">{e.name}</span>
                 </span>
-                <span className={`dot ${statusDot(e)}`} />
               </div>
             ))}
           </div>

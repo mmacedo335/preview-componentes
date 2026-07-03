@@ -6,7 +6,6 @@ import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const LIBRARY_DIR = path.join(__dirname, 'library')
-const IMG_EXT = /\.(png|jpe?g|webp|avif|svg)$/i
 
 const sanitizeName = (s: string) => (s || '').trim().replace(/[^A-Za-z0-9_-]/g, '')
 const sanitizeCategory = (s: string) =>
@@ -15,33 +14,6 @@ const sanitizeCategory = (s: string) =>
     .toLowerCase()
     .replace(/\s+/g, '-')
     .replace(/[^a-z0-9-]/g, '')
-
-function extFromMime(mime: string): string {
-  if (/png/.test(mime)) return 'png'
-  if (/jpe?g/.test(mime)) return 'jpg'
-  if (/webp/.test(mime)) return 'webp'
-  if (/avif/.test(mime)) return 'avif'
-  if (/svg/.test(mime)) return 'svg'
-  return 'png'
-}
-
-/** Decodifica um data URL (base64) -> { buffer, ext } ou null. */
-function decodeDataUrl(dataUrl: string): { buffer: Buffer; ext: string } | null {
-  const m = /^data:([^;]+);base64,(.*)$/s.exec(dataUrl || '')
-  if (!m) return null
-  return { buffer: Buffer.from(m[2], 'base64'), ext: extFromMime(m[1]) }
-}
-
-/** Remove screenshots anteriores de um viewport (qualquer extensão). */
-function clearViewport(dir: string, viewport: string) {
-  if (!fs.existsSync(dir)) return
-  for (const f of fs.readdirSync(dir)) {
-    const base = f.replace(IMG_EXT, '')
-    if (base.toLowerCase() === viewport.toLowerCase() && IMG_EXT.test(f)) {
-      fs.unlinkSync(path.join(dir, f))
-    }
-  }
-}
 
 /** Remove arquivos *.module.scss/css da pasta. */
 function clearModuleStyles(dir: string) {
@@ -52,6 +24,18 @@ function clearModuleStyles(dir: string) {
 }
 
 /** Monta o meta.json a partir do corpo da requisição. */
+/** Normaliza os links de loja do corpo, aceitando o formato antigo (storeLink). */
+function normStoreLinks(body: any): { label: string; url: string }[] {
+  const raw = Array.isArray(body.storeLinks)
+    ? body.storeLinks
+    : body.storeLink
+    ? [{ label: '', url: body.storeLink }]
+    : []
+  return raw
+    .map((s: any) => ({ label: String(s?.label ?? '').trim(), url: String(s?.url ?? '').trim() }))
+    .filter((s: { url: string }) => s.url)
+}
+
 function buildMeta(body: any, name: string, category: string) {
   const tags = Array.isArray(body.tags)
     ? body.tags
@@ -66,20 +50,7 @@ function buildMeta(body: any, name: string, category: string) {
     platform,
     description: body.description || '',
     tags,
-    storeLink: body.storeLink || '',
-  }
-}
-
-/** Grava screenshots (data URLs) enviados, sobrescrevendo o viewport. */
-function writeImages(dir: string, images: Record<string, string> | undefined) {
-  for (const vp of ['desktop', 'mobile'] as const) {
-    const dataUrl = images?.[vp]
-    if (!dataUrl) continue
-    const dec = decodeDataUrl(dataUrl)
-    if (dec) {
-      clearViewport(dir, vp)
-      fs.writeFileSync(path.join(dir, `${vp}.${dec.ext}`), dec.buffer)
-    }
+    storeLinks: normStoreLinks(body),
   }
 }
 
@@ -94,15 +65,6 @@ function readJsonBody(req: import('node:http').IncomingMessage): Promise<any> {
         reject(e)
       }
     })
-    req.on('error', reject)
-  })
-}
-
-function readRawBody(req: import('node:http').IncomingMessage): Promise<Buffer> {
-  return new Promise((resolve, reject) => {
-    const chunks: Buffer[] = []
-    req.on('data', (c) => chunks.push(c as Buffer))
-    req.on('end', () => resolve(Buffer.concat(chunks)))
     req.on('error', reject)
   })
 }
@@ -122,9 +84,10 @@ function checkAccess(req: import('node:http').IncomingMessage, accessId: string)
 
 /**
  * Plugin de DEV: endpoints para CADASTRAR componentes na biblioteca compartilhada.
- *  - POST /api/library/add        cria a pasta library/<cat>/<Nome>/ com código, schema,
- *                               scss, meta.json e screenshots.
- *  - POST /api/library/screenshot grava/troca o print (desktop|mobile) de um componente.
+ *  - POST /api/library/add     cria a pasta library/<cat>/<Nome>/ com código, schema,
+ *                              scss e meta.json.
+ *  - POST /api/library/update  edita/renomeia um componente existente.
+ *  - POST /api/library/delete  remove um componente.
  * Só existem em dev (escrita em disco). O dev faz commit/push depois.
  */
 function fgLibraryDevTools(accessId: string): Plugin {
@@ -188,9 +151,6 @@ function fgLibraryDevTools(accessId: string): Plugin {
             JSON.stringify(buildMeta(body, name, category), null, 2),
             'utf8'
           )
-
-          // screenshots (data URLs, opcionais)
-          writeImages(dir, body.images)
 
           server.config.logger.info(`  ＋ componente criado: library/${category}/${name}`)
           return json(res, 200, { ok: true, dir: `library/${category}/${name}`, hasStyles })
@@ -256,9 +216,6 @@ function fgLibraryDevTools(accessId: string): Plugin {
             'utf8'
           )
 
-          // screenshots: só sobrescreve os enviados (mantém os existentes)
-          writeImages(dir, body.images)
-
           server.config.logger.info(`  ✎ componente atualizado: library/${category}/${name}`)
           return json(res, 200, { ok: true, dir: `library/${category}/${name}` })
         } catch (e) {
@@ -283,27 +240,6 @@ function fgLibraryDevTools(accessId: string): Plugin {
           if (fs.existsSync(catDir) && fs.readdirSync(catDir).length === 0) fs.rmdirSync(catDir)
           server.config.logger.info(`  🗑 componente removido: library/${category}/${name}`)
           return json(res, 200, { ok: true })
-        } catch (e) {
-          return json(res, 500, { ok: false, error: (e as Error).message })
-        }
-      })
-
-      server.middlewares.use('/api/library/screenshot', async (req, res) => {
-        if (req.method !== 'POST') return json(res, 405, { ok: false, error: 'Method Not Allowed' })
-        if (!checkAccess(req, accessId)) return json(res, 401, { ok: false, error: 'Acesso negado.' })
-        try {
-          const u = new URL(req.originalUrl || req.url || '', 'http://localhost')
-          const name = sanitizeName(u.searchParams.get('name') || '')
-          const category = sanitizeCategory(u.searchParams.get('category') || '')
-          const viewport = (u.searchParams.get('viewport') || 'desktop') === 'mobile' ? 'mobile' : 'desktop'
-          const ext = (u.searchParams.get('ext') || 'png').replace(/[^a-z0-9]/gi, '').toLowerCase()
-          if (!name || !category) return json(res, 400, { ok: false, error: 'name/category ausentes' })
-          const dir = path.join(LIBRARY_DIR, category, name)
-          if (!fs.existsSync(dir)) return json(res, 404, { ok: false, error: 'componente não encontrado' })
-          const buffer = await readRawBody(req)
-          clearViewport(dir, viewport)
-          fs.writeFileSync(path.join(dir, `${viewport}.${ext}`), buffer)
-          return json(res, 200, { ok: true, file: `${viewport}.${ext}` })
         } catch (e) {
           return json(res, 500, { ok: false, error: (e as Error).message })
         }

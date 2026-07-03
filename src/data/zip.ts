@@ -1,5 +1,4 @@
 import type { ComponentEntry } from '../types'
-import { getRawImages } from './previews'
 
 /**
  * Gerador de .zip mínimo (método STORE, sem compressão) — puro, sem dependências.
@@ -99,7 +98,7 @@ export function makeZip(files: ZipFile[]): Blob {
   })
 }
 
-/** Empacota e baixa um componente (código + scss + schema + meta + screenshots). */
+/** Empacota e baixa um componente (código + scss + schema + meta). */
 export async function downloadComponent(entry: ComponentEntry): Promise<void> {
   const enc = new TextEncoder()
   const files: ZipFile[] = []
@@ -124,26 +123,13 @@ export async function downloadComponent(entry: ComponentEntry): Promise<void> {
           category: entry.category,
           description: entry.description,
           tags: entry.tags,
-          storeLink: entry.storeLink || '',
+          storeLinks: entry.storeLinks,
         },
         null,
         2
       )
     ),
   })
-
-  const imgs = getRawImages(entry)
-  for (const vp of ['desktop', 'mobile'] as const) {
-    const url = imgs[vp]
-    if (!url) continue
-    try {
-      const buf = new Uint8Array(await (await fetch(url)).arrayBuffer())
-      const ext = (url.split('?')[0].split('.').pop() || 'png').toLowerCase()
-      files.push({ name: `${vp}.${ext}`, data: buf })
-    } catch {
-      /* imagem indisponível -> ignora */
-    }
-  }
 
   const blob = makeZip(files)
   const a = document.createElement('a')

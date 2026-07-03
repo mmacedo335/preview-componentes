@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import type { ComponentEntry } from '../types'
-import PreviewPane from './PreviewPane'
 import CodeView from './CodeView'
 import PropsTable from './PropsTable'
 import ExamplesView from './ExamplesView'
-import { hasPreviewImage, getStoreLink } from '../data/previews'
+import { getStoreLinks, storeLinkLabel } from '../data/previews'
 import { downloadComponent } from '../data/zip'
 import { authHeader } from '../data/auth'
 
@@ -35,11 +34,10 @@ async function deleteComponent(entry: ComponentEntry) {
   }
 }
 
-type TabKey = 'preview' | 'code' | 'schema' | 'props' | 'examples'
+type TabKey = 'code' | 'schema' | 'props' | 'examples'
 
 export default function DetailPane({ entry, onEdit }: Props) {
-  const [tab, setTab] = useState<TabKey>('preview')
-  const [viewport, setViewport] = useState<'desktop' | 'mobile'>('desktop')
+  const [tab, setTab] = useState<TabKey>('code')
 
   if (!entry) {
     return (
@@ -54,12 +52,7 @@ export default function DetailPane({ entry, onEdit }: Props) {
     )
   }
 
-  const storeUrl = getStoreLink(entry)
-  const statusBadge = hasPreviewImage(entry) ? (
-    <span className="badge badge--live">com screenshot</span>
-  ) : (
-    <span className="badge badge--code">sem screenshot</span>
-  )
+  const storeLinks = getStoreLinks(entry)
 
   return (
     <main className="detail">
@@ -68,7 +61,6 @@ export default function DetailPane({ entry, onEdit }: Props) {
         <div className="detail__title-row">
           <h1 className="detail__title">{entry.name}</h1>
           <span className="badge badge--cat">{entry.category}</span>
-          {statusBadge}
         </div>
         <p className="detail__path">{entry.filePath}</p>
         {entry.description && <p className="detail__desc">{entry.description}</p>}
@@ -83,20 +75,20 @@ export default function DetailPane({ entry, onEdit }: Props) {
           <button className="action-btn action-btn--danger" onClick={() => deleteComponent(entry)}>
             🗑 Excluir
           </button>
-          {storeUrl && (
-            <a className="action-btn action-btn--link" href={storeUrl} target="_blank" rel="noreferrer">
-              Ver na loja ↗
+          {storeLinks.map((link) => (
+            <a
+              key={link.url}
+              className="action-btn action-btn--link"
+              href={link.url}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {storeLinkLabel(link)} ↗
             </a>
-          )}
+          ))}
         </div>
 
         <div className="tabs">
-          <button
-            className={`tab ${tab === 'preview' ? 'tab--active' : ''}`}
-            onClick={() => setTab('preview')}
-          >
-            Preview
-          </button>
           <button
             className={`tab ${tab === 'code' ? 'tab--active' : ''}`}
             onClick={() => setTab('code')}
@@ -125,29 +117,6 @@ export default function DetailPane({ entry, onEdit }: Props) {
       </div>
 
       <div className="detail__body">
-        {tab === 'preview' && (
-          <>
-            <div className="preview__toolbar">
-              <span className="preview__toolbar-label">Visualização</span>
-              <button
-                className={`viewport-btn ${viewport === 'desktop' ? 'viewport-btn--active' : ''}`}
-                onClick={() => setViewport('desktop')}
-              >
-                🖥️ Desktop
-              </button>
-              <button
-                className={`viewport-btn ${viewport === 'mobile' ? 'viewport-btn--active' : ''}`}
-                onClick={() => setViewport('mobile')}
-              >
-                📱 Mobile
-              </button>
-            </div>
-            <div className="preview__stage">
-              <PreviewPane key={entry.id} entry={entry} viewport={viewport} />
-            </div>
-          </>
-        )}
-
         {tab === 'code' && (
           <div>
             <p className="example__title">{entry.filePath}</p>

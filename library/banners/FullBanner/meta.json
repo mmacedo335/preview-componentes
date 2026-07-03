@@ -6,5 +6,10 @@
   "tags": [
     "banner"
   ],
-  "storeLink": "https://www.brandili.com.br/"
+  "storeLinks": [
+    {
+      "label": "Brandili",
+      "url": "https://www.brandili.com.br/"
+    }
+  ]
 }

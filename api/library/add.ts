@@ -1,7 +1,7 @@
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import {
   checkConfig, checkAccess, ghListDir, ghPut,
-  strToB64, dataUrlToB64, buildMeta,
+  strToB64, buildMeta,
   sanitizeName, sanitizeCategory,
   readJsonBody, json,
 } from './_github.js'
@@ -37,12 +37,6 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
 
     if (body.scss && String(body.scss).trim()) {
       await ghPut(`${dir}/${name}.module.scss`, strToB64(String(body.scss)), undefined, msg)
-    }
-
-    const images = body.images as Record<string, string> | undefined
-    for (const vp of ['desktop', 'mobile'] as const) {
-      const dec = dataUrlToB64(images?.[vp] ?? '')
-      if (dec) await ghPut(`${dir}/${vp}.${dec.ext}`, dec.b64, undefined, msg)
     }
 
     return json(res, 200, { ok: true, dir, mode: 'github' })

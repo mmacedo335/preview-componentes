@@ -27,6 +27,12 @@ export interface JsonSchema {
 
 export type Platform = 'FastStore' | 'VTEX IO'
 
+/** Link "Ver na loja" — nome da loja de exemplo + URL. */
+export interface StoreLink {
+  label: string
+  url: string
+}
+
 export interface ComponentEntry {
   id: string
   /** Pasta do componente em library/ (usada p/ casar código, schema e imagens). */
@@ -36,8 +42,8 @@ export interface ComponentEntry {
   platform: Platform
   description: string
   tags: string[]
-  /** URL "Ver na loja", se cadastrada. */
-  storeLink: string | null
+  /** Links "Ver na loja" (uma ou mais lojas de exemplo). */
+  storeLinks: StoreLink[]
   propsType: string | null
   props: PropDef[]
   /** Código-fonte do componente (.tsx). */
@@ -57,5 +63,7 @@ export interface ComponentMeta {
   platform?: Platform
   description?: string
   tags?: string[]
+  storeLinks?: StoreLink[]
+  /** @deprecated formato antigo (URL única) — lido só para compatibilidade. */
   storeLink?: string
 }

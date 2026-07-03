@@ -1,4 +1,4 @@
-import type { ComponentEntry, ComponentMeta, JsonSchema, StyleFile } from '../types'
+import type { ComponentEntry, ComponentMeta, JsonSchema, StoreLink, StyleFile } from '../types'
 import { parseProps, findPropsTypeName, findDescription } from './parseProps'
 
 /**
@@ -37,6 +37,18 @@ function dirOf(metaPath: string): string {
 
 function slug(s: string): string {
   return s.replace(/[^A-Za-z0-9]/g, '_')
+}
+
+/** Normaliza os links de loja do meta.json, aceitando o formato antigo (storeLink). */
+function toStoreLinks(meta: ComponentMeta): StoreLink[] {
+  const raw: StoreLink[] = Array.isArray(meta.storeLinks)
+    ? meta.storeLinks
+    : meta.storeLink
+    ? [{ label: '', url: meta.storeLink }]
+    : []
+  return raw
+    .map((s) => ({ label: (s.label ?? '').trim(), url: (s.url ?? '').trim() }))
+    .filter((s) => s.url)
 }
 
 export function loadCatalog(): ComponentEntry[] {
@@ -79,7 +91,7 @@ export function loadCatalog(): ComponentEntry[] {
       platform,
       description,
       tags: meta.tags ?? [],
-      storeLink: meta.storeLink && meta.storeLink.trim() ? meta.storeLink.trim() : null,
+      storeLinks: toStoreLinks(meta),
       propsType,
       props,
       source,
