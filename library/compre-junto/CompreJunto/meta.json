@@ -1,0 +1,15 @@
+{
+  "name": "CompreJunto",
+  "category": "compre-junto",
+  "platform": "VTEX IO",
+  "description": "Compre Junto",
+  "tags": [
+    "pdp"
+  ],
+  "storeLinks": [
+    {
+      "label": "Copafer",
+      "url": "https://www.copafer.com.br/caixa-d-agua-polietileno-500-litros---02010005---fortlev/p"
+    }
+  ]
+}
