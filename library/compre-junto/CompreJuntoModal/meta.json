@@ -1,0 +1,15 @@
+{
+  "name": "CompreJuntoModal",
+  "category": "compre-junto",
+  "platform": "VTEX IO",
+  "description": "Modal compre junto na pdp",
+  "tags": [
+    "pdp"
+  ],
+  "storeLinks": [
+    {
+      "label": "Copafer",
+      "url": "https://www.copafer.com.br/porcelanato-nord-ris-natural-retificado-120x120cm-caixa-com-2-87m%C2%B2---2-pecas---205789e-710015---portobello/p"
+    }
+  ]
+}
