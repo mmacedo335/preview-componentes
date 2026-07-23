@@ -1,0 +1,15 @@
+{
+  "name": "Calculadora",
+  "category": "calculadora",
+  "platform": "VTEX IO",
+  "description": "Calculadora de Piso",
+  "tags": [
+    "pdp"
+  ],
+  "storeLinks": [
+    {
+      "label": "copafer",
+      "url": "https://www.copafer.com.br/pedra-miracema-cinza-amarrado-com-0-5m%C2%B2-19-pecas-11-5x23cm---pedras-souza/p"
+    }
+  ]
+}
